@@ -102,15 +102,15 @@ def _live_lookup(families: list[str], actors: list[str]) -> dict[str, Any]:
     query = name if os.getenv("OSINT_LIVE_QUERY") else f"{name} ransomware malware advisory"
     try:
         from apify_client import ApifyClient
-
-        run = ApifyClient(token).actor(APIFY_ACTOR).call(
-            run_input={"queries": query, "maxPagesPerQuery": 1, "resultsPerPage": 5},
-            timeout_secs=60,
-        )
         client = ApifyClient(token)
-        items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+        run = client.actor(APIFY_ACTOR).call(
+            run_input={"queries": query, "maxPagesPerQuery": 1, "resultsPerPage": 5},
+        )
+        ds_id = getattr(run, "default_dataset_id", None) or run["defaultDatasetId"]
+        items = list(client.dataset(ds_id).iterate_items())
     except Exception as e:  # network / auth / actor failure must not crash the agent
-        return {"error": f"apify lookup failed: {type(e).__name__}"}
+        msg = str(e).replace(token, "***")[:160]
+        return {"error": f"apify lookup failed: {type(e).__name__}: {msg}"}
 
     organic = [r for page in items for r in (page.get("organicResults") or [])][:5]
     if not organic:
