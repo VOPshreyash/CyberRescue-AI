@@ -1,0 +1,28 @@
+{
+  "_note": "SYNTHETIC fixtures for offline/deterministic OSINT. Not real threat intelligence.",
+  "INC-A": {
+    "family": "commodity trojan (synthetic)",
+    "summary": "Commodity banking-style trojan; opportunistic, no known hands-on-keyboard activity.",
+    "behaviors": ["credential harvesting from browsers", "no lateral movement observed in public reporting"],
+    "exfiltration_before_encryption": false,
+    "public_decryptor": false,
+    "sources": ["synthetic-fixture://commodity-trojan-advisory"],
+    "confidence": "medium"
+  },
+  "INC-C": {
+    "family": "BlackHaze (synthetic)",
+    "summary": "Double-extortion ransomware crew: steals data first, then encrypts, then threatens publication.",
+    "behaviors": [
+      "bulk data exfiltration to attacker-controlled storage before encryption",
+      "lateral movement toward domain controllers using harvested credentials",
+      "deletes shadow copies and backups"
+    ],
+    "exfiltration_before_encryption": true,
+    "public_decryptor": false,
+    "sources": [
+      "synthetic-fixture://blackhaze-vendor-advisory",
+      "synthetic-fixture://blackhaze-incident-writeup"
+    ],
+    "confidence": "high"
+  }
+}
